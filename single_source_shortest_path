@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+template<typename T>
+#define pb push_back
+class Graph{
+  int V;
+  map<T,vector<T> > adj;
+  public:
+  Graph(int v){
+    V=v;
+    
+   }
+  void addEdge(T x,T y){
+    adj[x].pb(y);
+    adj[y].pb(x);
+  }
+  void bfs(T src){
+    bool *visited=new bool [v];
+    int dist[v];
+    for(int i=0;i<v;i++){
+      dist[i]=INT_MAX;
+      visited[i]=false;
+    }
+    visited[src]=true;
+    dist[src]=0;
+    queue<int> q;
+    q.push(src);
+    while(!q.empty()){
+      T node=q.front();
+      q.pop();
+      for(auto nbr : adj[node]){
+        if(!visited[nbr]){
+          q.push(nbr);
+          dist[nbr]=dist[node]+1;
+        }
+      }
+    }
+    for(auto x :adj){
+      cout<<dist[x.first]<<endl;
+    }
+  
+};
+int main(){
+  int n,m;
+  cin>>n>>m;
+  Graph<int> g(n);
+  int x,y;
+  while(m--){
+    cin>>x>>y;
+    g.addEdge(x,y);
+  }
+  g.bfs(0);
+  return 0;
+}
