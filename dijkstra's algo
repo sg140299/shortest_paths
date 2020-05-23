@@ -1,0 +1,63 @@
+#include <iostream>
+#include<bits/stdc++.h>
+using namespace std;
+#define pb push_back
+#define mk make_pair
+template<typename T>
+class Graph{
+    int V;
+    map<T,vector<pair<T,int>> >adj;
+    public:
+    Graph(int v){
+        V=v;     
+    }
+    void addedge(T x,T y,int dist,bool bidir=true){
+        adj[x].pb(mk(y,dist));
+        if(bidir){
+            adj[y].pb(mk(x,dist));
+        }
+
+    }
+    void djkistrasSSSP(T src){
+        map<T,int> dist;
+        for(auto p:adj){
+            dist[p.first]=INT_MAX;
+        }
+        dist[src]=0;
+        set<pair<int,T>>s;
+        s.insert(mk(0,src));
+        while(!s.empty()){
+            auto  p= *(s.begin());
+            T node=p.second;
+            int distnode=p.first;
+            s.erase(s.begin());
+            for(auto nbr:adj[node]){
+                T nr=nbr.first;
+                if(distnode+nbr.second<dist[nr]){
+                    auto f=s.find(mk(dist[nr],nr));
+                    if(f!=s.end()){s.erase(f);}
+                    s.insert(mk(distnode+nbr.second,nr));
+                    dist[nr]=distnode+nbr.second;
+                }
+            }
+        }
+        for(auto x: adj){
+            cout<<dist[x.first]<<endl;
+        }
+
+    }
+};
+int main() {
+    int n,m;
+    cin>>n>>m;
+    Graph<int> G(n);
+    int x,y,w;
+    while(m--){
+        cin>>x>>y>>w;
+        x-=1;
+        y-=1;
+        G.addedge(x,y,w);
+    }
+    G.djkistrasSSSP(0);
+    return 0;
+}
