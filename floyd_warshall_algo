@@ -1,0 +1,61 @@
+#include <iostream>
+#include<bits/stdc++.h>
+using namespace std;
+#define pb push_back
+#define mk make_pair
+template<typename T>
+class Graph{
+    int V;
+    map<T,vector<pair<T,int>> >adj;
+    public:
+    Graph(int v){
+        V=v;     
+    }
+    void addedge(T x,T y,int dist,bool bidir=true){
+        adj[x].pb(mk(y,dist));
+        if(bidir){
+            adj[y].pb(mk(x,dist));
+        }
+    }
+    void floyd_every_edge_min(){
+        vector<vector<int>> dist(V+1,vector<int>(V+1,INT_MAX));
+        //O(V+E)
+        for(int i=1;i<=V;i++){
+            for(auto nbr:adj[i]){
+                dist[i][nbr.first]=nbr.second;
+            }
+            dist[i][i]=0;    
+        }
+        //for kth phase
+        for(int k=1;k<=V;k++){
+            for(int i=1;i<=V;i++){
+                for(int j=1;j<=V;j++){
+                    dist[i][j]=min(dist[i][j],dist[i][k]+dist[k][j]);
+                }
+            }
+        }
+        for(int i=1;i<=V;i++){
+            for(int j=1;j<=V;j++){
+                cout<<dist[i][j]<<" ";
+            }
+            cout<<endl;
+        }
+        return;
+
+    }
+
+   
+};
+int main() {
+    int n,m;
+    cin>>n>>m;
+    Graph<int> G(n);
+    int x,y,w;
+    while(m--){
+        cin>>x>>y>>w;
+        G.addedge(x,y,w);
+    }
+    G.floyd_every_edge_min();
+
+    return 0;
+}
